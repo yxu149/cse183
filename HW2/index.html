@@ -1,0 +1,22 @@
+[[extend 'layout.html']]
+
+<div class="section">
+   <!-- Put the table here -->
+   <h1 class="title">Birds</h1>
+
+   <table class="table">
+      <thead>
+         [[for h in headers:]]
+         <th>[[=h]]</th>
+         [[pass]]
+      </thead>
+      <tbody>
+      [[for r in rows:]]
+        <tr>
+        [[for h in headers:]]
+           <td>[[=r[h] ]]</td>
+        </tr>
+      [[pass]]
+      </tbody>
+   </table>
+</div>
