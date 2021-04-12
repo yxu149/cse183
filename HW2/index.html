@@ -3,27 +3,31 @@
 <div class="section">
     <!-- Put the table here -->
     <div class="block">
-        <h1 class="title">Birds</h1>
-        <table class="table is-striped is-fullwidth">
-            <thead>
-                [[for h in head:]]
-                <th>
-                    [[=h]]
-                </th>
-                [[pass]]
-            </thead>
-            <tbody>
-                [[for line in data:]]
-                <tr>
-                    [[item = line.items()]]
-                    [[for stuff1, stuff2 in item:]]
-                    <td> 
-                        [[=stuff2]]
-                    </td>
-                    [[pass]]
-                [[pass]]
-                </tr>
-            </tbody>
-        </table>
+      <div class="columns">
+         <div class="column is-10 is-offset-1">
+            <h1 class="title">Birds</h1>
+            <table class="table is-striped is-fullwidth">
+                  <thead>
+                     [[for h in head:]]
+                     <th>
+                        [[=h]]
+                     </th>
+                     [[pass]]
+                  </thead>
+                  <tbody>
+                     [[for line in data:]]
+                     <tr>
+                        [[item = line.items()]]
+                        [[for stuff1, stuff2 in item:]]
+                        <td> 
+                              [[=stuff2]]
+                        </td>
+                        [[pass]]
+                     [[pass]]
+                     </tr>
+                  </tbody>
+            </table>
+         </div>
+      </div>
     </div>
 </div>
