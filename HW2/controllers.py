@@ -31,9 +31,10 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
 from .settings import APP_FOLDER
-import os
-JSON_FILE = os.path.join(APP_FOLDER, "data", "table.json")
 
+import os
+import json
+JSON_FILE = os.path.join(APP_FOLDER, "data", "table.json")
 
 url_signer = URLSigner(session)
 
@@ -41,10 +42,22 @@ url_signer = URLSigner(session)
 @action.uses(db, auth, 'index.html')
 def index():
     ### You have to modify the code here as well.
-    header = ['Bird Species', 'Weight', 'Diet', 'Habitat']
-    name = ['bird', 'weight', 'diet', 'habitat']
+
+    # Read in data from table.json
+    data = open(JSON_FILE)
+    data_dict = json.load(data)
+    
+    # Names to be displayed to the page
+    table_head = [
+        'Bird Species',
+        'Weight',
+        'Diet',
+        'Habitat']
+    # Actual keys in table.json
+
+    data.close()
+
     return dict(
-        headers=header,
-        json=open(JSON_FILE),
-        naming=name,
+        head=table_head,
+        data=data_dict
     )
