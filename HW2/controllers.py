@@ -30,6 +30,10 @@ from yatl.helpers import A
 from .common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
 from py4web.utils.url_signer import URLSigner
 from .models import get_user_email
+from .settings import APP_FOLDER
+import os
+JSON_FILE = os.path.join(APP_FOLDER, "data", "table.json")
+
 
 url_signer = URLSigner(session)
 
@@ -37,32 +41,10 @@ url_signer = URLSigner(session)
 @action.uses(db, auth, 'index.html')
 def index():
     ### You have to modify the code here as well.
-    headers = ['Bird Species', 'Weight', 'Diet', 'Habitat']
-    row1 = {
-        'Bird Species': 'Mountain Chickadee',
-        'Weight': '11',
-        'Diet': 'Insects',
-        'Habitat': 'Forests',
-    }
-    row2 = {
-        'Bird Species': 'Bushtit',
-        'Weight': '5',
-        'Diet': 'Insects',
-        'Habitat': 'Scrub',
-    }
-    row3 = {
-        'Bird Species': 'California Towhee',
-        'Weight': '45',
-        'Diet': 'Seeds',
-        'Habitat': 'Scrub',
-    }
-    row4 = {
-        'Bird Species': 'Black Phoebe',
-        'Weight': '18',
-        'Diet': 'Insects',
-        'Habitat': 'Open Woodlands',
-    }
+    header = ['Bird Species', 'Weight', 'Diet', 'Habitat']
+    name = ['bird', 'weight', 'diet', 'habitat']
     return dict(
-        headers=headers,
-        rows=[row1, row2, row3, row4],
+        headers=header,
+        json=open(JSON_FILE),
+        naming=name,
     )

@@ -6,17 +6,18 @@
 
    <table class="table">
       <thead>
-         [[for h in headers:]]
-         <th>[[=h]]</th>
-         [[pass]]
-      </thead>
-      <tbody>
-      [[for r in rows:]]
-        <tr>
         [[for h in headers:]]
-           <td>[[=r[h] ]]</td>
+        <th>[[=h]]</th>
+        [[pass]]
+      </thead>
+        <tbody>
+        [[for name in json:]]
+        <tr>
+            [[for name in json:]]
+            <td>[[=name ]]</td>
+            [[pass]]
         </tr>
-      [[pass]]
-      </tbody>
+        [[pass]]
+        </tbody>
    </table>
 </div>
