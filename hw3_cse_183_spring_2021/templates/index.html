@@ -1,0 +1,54 @@
+[[extend 'layout.html']]
+
+<div class="section">
+   <!-- Put the table here -->
+   <a class="button is-success is-rounded" href="[[=URL('add')]]">
+      <span class="icon"><i class="fa fa-plus"></i></span>
+      <span>Add</span>
+   </a>
+
+   <div class="container">
+      <table class="table is-striped is-fullwidth">
+         <tr>
+            <th>Bird</th>
+            <th>Weight</th>
+            <th>Diet</th>
+            <th>Habitat</th>
+            <th>Bird Count</th>
+            <th>User Email</th>
+            <th></th>
+            <th></th>
+            <th></th>
+         </tr>
+         [[for row in rows:]]
+         <tr>
+            <td>[[=row.bird]]</td>
+            <td>[[=row.weight]]</td>
+            <td>[[=row.diet]]</td>
+            <td>[[=row.habitat]]</td>
+            <td>[[=row.n_sightings]]</td>
+            <td>[[=row.user_email]]</td>
+            <td>
+               <a class="button" href="[[=URL('edit', row.id)]]">
+                  <span class="icon"><i class="fa fa-fw fa-pencil"></i></span>
+                  <span>Edit</span>
+               </a>
+            </td>
+            <td>
+               <a class="button" href="[[=URL('inc', row.id, signer=url_signer)]]">
+                  <span class="icon"><i class="fa fa-arrow-circle-up"></i></span>
+                  <span>Add One</span>
+               </a>
+            </td>
+            <td>
+               <a class="button" href="[[=URL('delete', row.id, signer=url_signer)]]">
+                  <span class="icon"><i class="fa fa-trash"></i></span>
+                  <span>Delete</span>
+               </a>
+            </td>
+         </tr>
+         [[pass]]
+      </table>
+   </div>
+
+</div>
