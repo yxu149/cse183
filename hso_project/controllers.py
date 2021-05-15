@@ -169,9 +169,3 @@ def delete_phone(contact_id=None, phone_id=None):
         (db.phone.contact_id == contact_id)
     ).delete()
     redirect(URL('edit_phones', contact_id, signer=url_signer))
-
-@action('global_footer')
-@action.uses(db, auth, 'global_footer.html')
-def global_footer():
-    return dict()
-
