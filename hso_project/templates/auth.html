@@ -1,0 +1,52 @@
+[[extend "layout.html"]]
+
+<style>
+  .auth-container {
+    max-width: 80%;
+    min-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  a.button {
+      margin-left: 10px;
+  }
+</style>
+
+<section class="section">
+
+  <div class="block">
+    <h3 class="title is-title-3">
+      Welcome, Kind Stranger!
+    </h3>
+    <p>
+      Please sign in or sign up here first:
+    </p>
+  </div>
+
+  <div class="columns">
+    <div class="column is-one-third">
+      <div class="block">
+        [[=form]]
+      </div>
+    </div>
+
+    <div class="column">
+      <div class="block">
+        <figure class="image">
+          <iframe class="has-ratio" width="860" height="250" src="https://www.youtube.com/embed/nC-bVtpIMd4" frameborder="0" allowfullscreen></iframe>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    You will need an account to enter our marketplace!
+    <a href="">
+      Learn why here
+    </a>
+  </div>
+
+</section>
