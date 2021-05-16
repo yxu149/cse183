@@ -11,7 +11,7 @@ let init = (app) => {
     app.data = {
         // Complete as you see fit.
         add_mode: false,
-        post: "",
+        write_post: "",
         rows : [],
 
     };
@@ -23,17 +23,42 @@ let init = (app) => {
         return a;
     };
 
-    app.add_post = function(){
 
+    app.add_post = function(){
+        axios.post(add_post_url,
+            {post: app.vue.write_post,
+            }).then(function(response) {
+                app.vue.rows.push({
+                    id: response.data.id,
+                    post: app.vue.write_post,
+                });
+                app.enumerate(app.vue.rows);
+                app.reset_form();
+                app.set_add_status(false);
+        })
     };
+
+    app.reset_form = function(){
+        app.vue.write_post = "";
+
+    }
 
     app.set_add_status = function(new_status){
-        app.vue.add_mod = new_status;
+        app.vue.add_mode = new_status;
 
     };
 
-    app.delete_post = function(){
-        //TODO
+    app.delete_post = function(row_idx){
+        let id = app.vue.rows[row_idx].id;
+        axios.get(delete_post_url, {params: {id: id}}).then(function(response){
+            for(let i = 0; i < app.vue.rows.length; i++){
+                if(app.vue.rows[i].id){
+                    app.vue.rows.splice(i,1);
+                    app.enumerate(app.vue.rows);
+                    break;
+                }
+            }
+        });
 
     };
     // This contains all the methods.

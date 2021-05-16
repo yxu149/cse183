@@ -33,6 +33,8 @@ from .models import get_user_email
 
 url_signer = URLSigner(session)
 
+
+
 @action('index')
 @action.uses(db, auth, 'index.html')
 def index():
@@ -42,7 +44,6 @@ def index():
         load_post_url = URL('load_post', signer=url_signer),
         add_post_url = URL('add_post', signer=url_signer),
         delete_post_url = URL('delete_post', signer=url_signer),
-
 
     )
 
@@ -67,3 +68,4 @@ def delete_post():
     assert id is not None
     db(db.post.id == id).delete()
     return "ok"
+
