@@ -37,10 +37,12 @@
         <table class="table is-striped is-fullwidth">
             <tr v-for="r in rows">
                 <td>{{ r.post }}</td>
-            <td><button @click="delete_post(r._idx)" class="button is-danger">
+            <td>
+                <div>
+                <button class="fa fa-thumbs-o-up"></button> <button class="fa fa-thumbs-o-down"></button>
 
-                <i class="fa fa-trash"></i></button>
-                <div><i class="fa fa-thumbs-o-up"></i> <i class="fa fa-thumbs-o-down"></i></div>
+                <button @click="delete_post(r._idx)" class="button is-danger"><i class="fa fa-trash"></i></button>
+                </div>
 
             </td>
 

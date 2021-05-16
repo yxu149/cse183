@@ -22,9 +22,8 @@ def get_user():
 db.define_table('post', Field('posts'))
 db.define_table('thumb',
                 Field('post', 'reference posts'),
-                Field('thumbup', 'integer', default=0),
-                Field('thumbdown', 'integer', default=0),
-                Field('rater', 'reference auth_user', default=get_user)
+                Field('rating', 'boolean', default=None),
+                Field('rater', 'reference auth_user', default=get_user),
                 )
 #
 ## always commit your models to avoid problems later

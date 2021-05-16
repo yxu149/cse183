@@ -23,6 +23,13 @@ let init = (app) => {
         return a;
     };
 
+    app.complete = (rows) => {
+        // Initializes useful fields of images.
+        rows.map((row) => {
+            row.rating = 0;
+            row.num_thumb_display = 0;
+        })
+    };
 
     app.add_post = function(){
         axios.post(add_post_url,
