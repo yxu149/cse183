@@ -1,0 +1,364 @@
+timestamp: 2021-06-01T22:56:19.962297
+CREATE TABLE "py4web_session"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "rkey" CHAR(512),
+    "rvalue" TEXT,
+    "expiration" INTEGER,
+    "created_on" TIMESTAMP,
+    "expires_on" TIMESTAMP
+);
+success!
+timestamp: 2021-06-01T22:56:19.965872
+CREATE TABLE "auth_user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "email" CHAR(512) UNIQUE,
+    "password" CHAR(512),
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "sso_id" CHAR(512),
+    "action_token" CHAR(512),
+    "last_password_change" TIMESTAMP,
+    "past_passwords_hash" TEXT
+);
+success!
+timestamp: 2021-06-01T22:56:19.968202
+CREATE TABLE "auth_user_tag_groups"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "path" CHAR(512),
+    "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+timestamp: 2021-06-01T22:56:20.292824
+CREATE TABLE "user"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "first_name" CHAR(512),
+    "last_name" CHAR(512),
+    "uuid" CHAR(512),
+    "email" CHAR(512)
+);
+success!
+timestamp: 2021-06-01T22:56:20.296251
+CREATE TABLE "user_option_Info"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "user" ("id") ON DELETE CASCADE  ,
+    "user_image" TEXT,
+    "nickname" CHAR(512),
+    "sex" CHAR(512),
+    "day" CHAR(512),
+    "month" CHAR(512),
+    "year" CHAR(512),
+    "age" CHAR(512),
+    "zip_code" CHAR(512),
+    "user_description" TEXT
+);
+success!
+timestamp: 2021-06-01T22:56:20.298957
+CREATE TABLE "product"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "user" ("id") ON DELETE CASCADE  ,
+    "product_name" CHAR(512),
+    "quantity" INTEGER,
+    "price" DOUBLE,
+    "image" TEXT,
+    "description" TEXT
+);
+success!
+timestamp: 2021-06-01T22:56:20.301847
+CREATE TABLE "user_rate_it"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_rate" CHAR(512),
+    "user_role" CHAR(512),
+    "rater_id" CHAR(512),
+    "rater_email" CHAR(512)
+);
+success!
+timestamp: 2021-06-01T22:56:20.304425
+CREATE TABLE "post"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "user" ("id") ON DELETE CASCADE  ,
+    "post_content" CHAR(512),
+    "post_user" CHAR(512)
+);
+success!
+timestamp: 2021-06-02T03:47:03.315502
+ALTER TABLE "post" ADD "post_username" CHAR(512);
+timestamp: 2021-06-02T03:47:03.319003
+ALTER TABLE "post" ADD "post_user_image" TEXT;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-02T20:58:33.925557
+CREATE TABLE "thumbs"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "post_id" INTEGER REFERENCES "post" ("id") ON DELETE CASCADE  ,
+    "rating_up" CHAR(1),
+    "rating_down" CHAR(1),
+    "rater" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE  
+);
+success!
+success!
+success!
+timestamp: 2021-06-02T21:52:24.531556
+CREATE TABLE "rater_person"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "rate_id" INTEGER REFERENCES "thumbs" ("id") ON DELETE CASCADE  ,
+    "first_name" CHAR(512),
+    "last_name" CHAR(512)
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-03T21:50:09.846306
+CREATE TABLE "wishlist"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "user" ("id") ON DELETE CASCADE  ,
+    "product_name" CHAR(512),
+    "quantity" INTEGER,
+    "price" DOUBLE,
+    "image" TEXT,
+    "description" TEXT
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-04T01:23:46.284666
+ALTER TABLE "wishlist" ADD "product_id" INTEGER REFERENCES "product" ("id") ON DELETE CASCADE  ;
+success!
+success!
+success!
+success!
+timestamp: 2021-06-04T02:39:54.146437
+ALTER TABLE "wishlist" ADD "product_owner" CHAR(512);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-04T03:52:05.464010
+CREATE TABLE "chat"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "seller" CHAR(512),
+    "buyer" CHAR(512),
+    "read_status" CHAR(1)
+);
+success!
+success!
+success!
+timestamp: 2021-06-04T17:51:10.918462
+ALTER TABLE "chat" ADD "seller_read_status" CHAR(1);
+timestamp: 2021-06-04T17:51:10.921245
+ALTER TABLE "chat" ADD "buyer_read_status" CHAR(1);
+success!
+timestamp: 2021-06-04T17:51:10.925022
+CREATE TABLE "seller"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "chat_id" INTEGER REFERENCES "chat" ("id") ON DELETE CASCADE  ,
+    "buyer_id" INTEGER,
+    "seller_text" TEXT
+);
+success!
+timestamp: 2021-06-04T17:51:10.928580
+CREATE TABLE "buyer"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "chat_id" INTEGER REFERENCES "chat" ("id") ON DELETE CASCADE  ,
+    "seller_id" INTEGER,
+    "buyer_text" TEXT
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-04T21:01:08.443965
+CREATE TABLE "more_image"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "product_id" INTEGER REFERENCES "product" ("id") ON DELETE CASCADE  ,
+    "more_image" TEXT
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2021-06-05T04:53:05.664667
+CREATE TABLE "product_post"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER REFERENCES "user" ("id") ON DELETE CASCADE  ,
+    "post_content" CHAR(512),
+    "post_username" CHAR(512),
+    "post_user_image" TEXT
+);
+success!
+success!
+timestamp: 2021-06-05T05:03:37.187730
+ALTER TABLE "product_post" ADD "product_id" INTEGER REFERENCES "product" ("id") ON DELETE CASCADE  ;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
