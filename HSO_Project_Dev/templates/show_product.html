@@ -1,0 +1,103 @@
+[[extend 'layout.html']]
+
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<div class="section" style="background-image: linear-gradient(#e66465, #9198e5);" id="vue-target" v-cloak>
+    <div class="container block has-text-centered">
+        <div v-if="images.length > 0" class="columns is-vcentered">
+            <div v-for="image in images" class="column is-1">
+                <img class="image is-64x64" @click="set_image_status(image._idx)" :src="image.more_image">
+            </div>
+        </div>
+        <div class="columns is-vcentered">
+            <div v-for="image in images">
+                <div v-if="image.status == true" class="column">
+                    <img class="is-4by3" :src="image.more_image">
+                </div>
+            </div>
+            <div v-if="products.length > 0" class="column is-6 is-offset-1">
+                <div class="title">
+                    {{products[0].product_name}}
+                </div>
+                <a :href="'[[=URL('visitor')]]' + '/' + products[0].user_id" class="subtitle  has-text-link">
+                    Owner: {{products[0].owner}}
+                </a>
+                <div class="mt-2">
+                    <span class="product_price">${{products[0].price}}</span>
+                    <span class="product_quantity ml-5">Quantity: {{products[0].quantity}}</span>
+                </div>
+                <div class="is-size-4">
+                    {{products[0].description}}
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <div class="container block">
+
+        <nav class="level">
+            <div class="level-left">
+                <a v-if="login_status==='out'"
+                    href="[[=URL('auth/plugin/oauth2google/login', vars=dict(next='../community'))]]"
+                    class="button is-primary level-item">
+                    Sign in to start posting!
+                </a>
+                <button v-if="login_status==='in'" @click="set_add_status(true)" class="button is-primary level-item">
+                    <span>
+                        <i class="fa fa-pencil"> Compose a new post</i>
+                    </span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <div v-if="add_status" class="container block">
+        <div class="form">
+            <div class="field">
+                <div class="control">
+                    <textarea class="textarea is-primary" v-model="post_content"
+                        placeholder="Enter new post here"></textarea>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input type="submit" @click="add_post" value="Post" class="button is-primary">
+                    <input type="submit" @click="set_add_status(false)" value="Cancel" class="button is-warning">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-for="post in posts.slice().reverse()" class="tile box" style="background-color:rgba(256,256,256,0.6);">
+        <div class="media">
+            <div class="media-left">
+                <p class="image is-64x64">
+                    <img :src="post.post_user_image">
+                </p>
+            </div>
+            <div class="media-content">
+                <div class="content">
+                    <p>
+                        <a :href="'[[=URL('visitor')]]' + '/' + post.user_id">{{post.post_username}}</a>
+                        <br>
+                        {{post.post_content}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+    let load_product_detail_url = "[[=XML(load_product_detail_url)]]";
+    let add_product_post_url = "[[=XML(add_product_post_url)]]";
+</script>
+<script src="js/show_product.js"></script>
+[[end]]

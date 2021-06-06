@@ -1,0 +1,124 @@
+[[extend 'layout.html']]
+
+<style>
+[v-cloak] {
+     display: none;
+}
+</style>
+
+<div class="section" style="background-image: linear-gradient(#e66465, #9198e5);" id="vue-target" v-cloak>
+
+  <div v-if="add_mode" class="container block">
+    <div class="title">Add Product</div>
+    <div class="form">
+      <div v-for="f in fields" class="field">
+        <label class="label">{{f[0]}}:</label>
+        <div class="control">
+          <input type="text" v-model="add_fields[f[1]]" class="input">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input type="submit" @click="add_product" value="Add" class="button is-primary">
+          <input type="submit" @click="set_add_status(false)" value="Cancel" class="button is-warning">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container block">
+    <div class="level">
+      <div class="level-left">
+        <p class="title">Products</p>
+      </div>
+      <div class="level-right">
+        <img class="image is-128x128" src="../static/logo.png">
+      </div>
+    </div>
+    <table class="table is-striped is-fullwidth" style="background-color:rgba(256,256,256,0.6);">
+      <tr>
+        <th></th><th></th>
+        <th v-for="f in fields">{{f[0]}}</th>
+        <th></th>
+      </tr>
+      <tr v-for="r in rows" style="background-color: transparent;">
+
+        <td class="is-tight">
+          <div class="file is-info">
+            <label class="file-label">
+              <input class="file-input" type="file"
+                     accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                     @change="upload_file($event, r._idx)">
+              <span class="file-cta">
+                <span class="file-label">
+                  <span><i class="fa fa-upload"></i></span>
+                </span>
+              </span>
+            </label>
+          </div>
+        </td>
+        <td class="is-tight">
+          <div v-if="r.image" class="box">
+            <img width="100" :src="r.image" />
+          </div>
+          <div v-if="r.more_image" class="box">
+            <div v-for="m in r.more_image">
+              <img width="100" :src="m" />  
+            </div>
+          </div>
+          <div v-if="r.image">
+            <div class="file is-info">
+              <label class="file-label">
+                <input class="file-input" type="file"
+                      accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                      @change="add_more($event, r._idx)">
+                <span class="file-cta">
+                  <span class="file-label">
+                    <span><i class="fa fa-plus"> Add More</i></span>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </td>
+        <td v-for="f in fields">
+          <div class="control" :class="{'is-loading': r._state[f[1]] === 'pending'}" >
+            <input type="text" class="input" v-model="r[f[1]]"
+              :class="{
+                'is-focused': r._state[f[1]] === 'edit',
+                'is-static': r._state[f[1]] === 'clean',
+              }"
+              :readonly="r._state[f[1]] === 'clean'"
+              @click="start_edit(r._idx, f[1])"
+              @blur="stop_edit(r._idx, f[1])"
+            />
+          </div>
+        </td>
+
+        <td><button @click="delete_product(r._idx)" class="button is-danger">
+          <i class="fa fa-trash"></i></button></td>
+      </tr>
+    </table>
+    <button @click="set_add_status(true)" class="button is-primary">
+      <span class="icon is-small">
+        <i class="fa fa-plus fa-fw"></i>
+      </span>
+      <span>Add Product</span>
+    </button>
+  </div>
+
+</div>
+
+
+[[block page_scripts]]
+<script>
+  let load_url = "[[=XML(load_url)]]";
+  let add_url = "[[=XML(add_url)]]";
+  let delete_url = "[[=XML(delete_url)]]";
+  let edit_url = "[[=XML(edit_url)]]";
+  let upload_url = "[[=XML(upload_url)]]";
+  let add_more_url = "[[=XML(add_more_url)]]";
+  let load_image_url = "[[=XML(load_image_url)]]";
+</script>
+<script src="js/manage_products.js"></script>
+[[end]]

@@ -1,0 +1,138 @@
+[[extend 'layout.html']]
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>
+
+<title>
+    Chats - HSO Marketplace
+</title>
+
+<div class="section" id="vue-target" v-cloak>
+
+<div class="section" v-if="login_status=='out'">
+    <article class="message is-danger">
+        <div class="message-header">
+            <p>Error</p>
+        </div>
+        <div class="message-body">
+            Please sign in to use Chat functions!
+        </div>
+    </article>
+</div>
+
+<section v-if="login_status=='in'" class="columns">
+    <div class="column is-one-quarter">
+        <nav class="panel">
+            <p class="panel-heading">Chats</p>
+        </nav>
+
+        <div class="panel-block">
+            <p class="control has-icons-left">
+                <input class="input" type="text" placeholder="Search">
+                <span class="icon is-left">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </span>
+            </p>
+        </div>
+        <!--panel block class is also a button, link to js function to switch chats-->
+
+        <a class="panel-block is-active">
+            <figure class="image is-24x24">
+                <!-- replace line below with user.profile_pic-->
+                <img src="https://static.wikia.nocookie.net/mrfz/images/6/6a/Blaze_icon.png">
+            </figure>
+            <p>Blaze</p>
+        </a>
+    </div>
+
+    <div class="column">
+        <div class="box is-fullwidth">
+            <div class="block">
+                <!--connect to database to get associated product title something like that-->
+                <h3 class="title is-3">Blaze</h3>
+            </div>
+
+            <div class="block">
+                <div class="columns">
+                    <!--connect to profile page here-->
+                    <button class="button is-fullwidth">Visit their profile</button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <article class="message">
+            <div class="message-body">
+                Please follow local guidelines about physical distancing and staying home during COVID-19.
+            </div>
+        </article>
+
+
+        <div class="levels">
+            <div class="level-left">
+                <div class="level-item">
+                    <div v-for="msg in msgs.slice()" class="content">
+                        <div class="tags has-addons">
+                            <span class="tag is-dark is-medium">
+                                <a :href="'[[=URL('visitor')]]' + '/' + msg.user_id">{{msg.msg_username}}</a>
+                            </span>
+                            <span class="tag is-info is-medium">
+                                <p class="image is-24x24">
+                                    <img :src="msg.msg_user_image">
+                                </p>
+                            </span>
+                        </div>
+                        <div class="box">
+                            {{msg.msg_content}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+        </div>
+        <!--end of vue for-->
+
+        <!--Insert this before cleaning this convo on server-->
+        <br>
+        <article class="message">
+            <div class="message-body">
+                End of Messages.
+            </div>
+        </article>
+
+        <div class="box is-fullwidth">
+            <div class="form">
+                <div class="field">
+                    <div class="control">
+                        <div class="block">
+                            <!--Chat text entry box-->
+                            <textarea class="textarea" v-model="msg_content" placeholder="Enter your message..."></textarea>
+                        </div>
+                        <div class="block">
+                            <!--Chat text send button-->
+                            <!--Connect to app.send-->
+                            <input type="submit" @click="add_msg" value="Send" class="button is-info">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let load_chat_url = "[[=XML(load_chat_url)]]";
+  let add_msg_url = "[[=XML(add_msg_url)]]";
+  let chat_update_image_url = "[[=XML(chat_update_image_url)]]";
+  let baseurl = "[[=URL('visitor')]]";
+</script>
+<script src="js/utils.js"></script>
+<script src="js/convo.js"></script>
+[[end]]

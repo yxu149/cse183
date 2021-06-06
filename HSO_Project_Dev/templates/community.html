@@ -1,0 +1,127 @@
+[[extend 'layout.html']]
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>
+
+
+<div class="section" style="background-image: linear-gradient(#e66465, #9198e5);" id="vue-target" v-cloak>
+
+  <div class="container block">
+
+    <nav class="level">
+      <div class="level-left">
+        <h1 class="title level-item">HIGH STREET ONLINE COMMUNITY</h1>
+      </div>
+      <div class="level-right">
+        <a v-if="login_status==='out'" href="[[=URL('auth/plugin/oauth2google/login', vars=dict(next='../community'))]]"
+          class="button is-primary level-item">
+          Sign in to start posting!
+        </a>
+        <button v-if="login_status==='in'" @click="set_add_status(true)" class="button is-primary level-item">
+          <span>
+            <i class="fa fa-pencil"> Compose a new post</i>
+          </span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <div v-if="add_status" class="container block">
+    <div class="form">
+      <div class="field">
+        <div class="control">
+          <textarea class="textarea is-primary" v-model="post_content" placeholder="Enter new post here"></textarea>
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input type="submit" @click="add_post" value="Post" class="button is-primary">
+          <input type="submit" @click="set_add_status(false)" value="Cancel" class="button is-warning">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container block">
+
+    <!-- BEGIN VUE FOR -->
+    <div v-for="post in posts.slice().reverse()" class="tile box" style="background-color:rgba(256,256,256,0.6);">
+      <div class="media">
+        <div class="media-left">
+          <p class="image is-64x64">
+            <img :src="post.post_user_image">
+          </p>
+        </div>
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <a :href="'[[=URL('visitor')]]' + '/' + post.user_id">{{post.post_username}}</a>
+              <br>
+              {{post.post_content}}
+            </p>
+            <nav v-if="login_status==='in'" class="level">
+              <div class="level-left">
+                <span class="icon is-size-4 has-text-success level-item" v-if="post.up_rating_status_display==true" 
+                @click="set_up_rating_status(post._idx, post.up_rating_status)"
+                @mouseover="mouse_up_in(post._idx)"
+                @mouseleave="mouse_up_out(post._idx)">
+                  <i class="fa fa-thumbs-up"></i>
+                </span>
+                <span class="icon is-size-4 has-text-success level-item" v-if="post.up_rating_status_display==false"
+                @click="set_up_rating_status(post._idx, post.up_rating_status)">
+                  <i class="fa fa-thumbs-o-up"></i>
+                </span>
+                <span class="icon is-size-4 has-text-info level-item" v-if="post.down_rating_status_display==true"
+                @click="set_down_rating_status(post._idx, post.down_rating_status)"
+                @mouseover="mouse_down_in(post._idx)"
+                @mouseleave="mouse_down_out(post._idx)">
+                  <i class="fa fa-thumbs-down"></i>
+                </span>
+                <span class="icon is-size-4 has-text-info level-item" v-if="post.down_rating_status_display==false"
+                @click="set_down_rating_status(post._idx, post.down_rating_status)">
+                  <i class="fa fa-thumbs-o-down"></i>
+                </span>
+                <span class="icon is-size-4 has-text-danger level-item" v-if="post.user_id == user_id" @click="delete_post(post._idx)">
+                  <i class="fa fa-trash-o"></i>
+                </span>
+              </div>
+            </nav>
+            <div v-if="rater_up_status">
+              <span v-if="post.rater_status_up=='up'" class="is-size-7">
+                <p v-if="person_num > 1">Liked by {{person_num}} persons</p>
+                <p v-else>Liked by {{person_num}} person</p>
+              </span>
+            </div>
+            <div v-if="rater_down_status">
+              <span v-if="post.rater_status_down=='down'" class="is-size-7">
+                <p v-if="person_num > 1">Disliked by {{person_num}} persons</p>
+                <p v-else>Disliked by {{person_num}} person</p>              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- END VUE FOR -->
+  </div>
+</div>
+
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let load_community_url = "[[=XML(load_community_url)]]";
+  let add_post_url = "[[=XML(add_post_url)]]";
+  let delete_post_url = "[[=XML(delete_post_url)]]";
+  let update_image_url = "[[=XML(update_image_url)]]";
+  let set_rating_url = "[[=XML(set_rating_url)]]";
+  let get_rating_url = "[[=XML(get_rating_url)]]";
+  let person_number_url = "[[=XML(person_number_url)]]";
+  let baseurl = "[[=URL('visitor')]]";
+</script>
+<script src="js/utils.js"></script>
+<script src="js/community.js"></script>
+[[end]]
