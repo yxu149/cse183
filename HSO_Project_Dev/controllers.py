@@ -43,7 +43,6 @@ url_signer = URLSigner(session)
 @action('index')
 @action.uses(db, auth, 'index.html')
 def index():
-    print("User:", get_user_email())
     #加入本地的user database中
     if get_user_email() is not None:
         check_user=db(db.user.email == get_user_email()).select().first()
@@ -69,12 +68,9 @@ def get_username():
     #TODO: 修改EXAMPLE_USER为get_user_email（）去主动获得当前用户信息
     if get_user_email() is not None:
         userInfo=db(db.user.email == get_user_email()).select().first()
-        print(userInfo.id)
         userInfo_N=db(db.user_option_Info.user_id == userInfo.id).select().first()
         if userInfo_N != None:
-            print("1")
             if userInfo_N.nickname != None:
-                print("2")
                 userName=userInfo_N.nickname
             else:
                 userName=userInfo.first_name +" "+userInfo.last_name
@@ -125,7 +121,6 @@ def add_wishlist():
     product_id = request.json.get("product_id")
     product_owner = request.json.get("product_owner")
     product_Info = db(db.product.id == product_id).select().first()
-    print(product_Info.id)
     db.wishlist.update_or_insert(
         ((db.wishlist.user_id == get_user()) & (db.wishlist.product_id == product_id)),
         user_id = get_user(),
@@ -144,7 +139,6 @@ def add_wishlist():
 @action.uses(db, session, auth.user, 'registration.html')
 def registration():
     id=db(db.user.email == get_user_email()).select().first().id
-    print("id", id)
     form = Form(
         [Field('nickname'),
          Field('sex'),
@@ -190,8 +184,6 @@ def registration():
 @action('user_profile')
 @action.uses(db, auth.user, 'user_profile.html')
 def user_profile():
-    print("User:", get_user_email())
-    #TODO: 暂时没用到下一行，可删ing
     form = Form(db.user_rate_it, csrf_session=session, formstyle=FormStyleBulma)
     return dict(
         upload_user_image_url = URL('upload_user_image', signer=url_signer),
@@ -213,6 +205,7 @@ def show_community_status():
 @action.uses(db, auth, url_signer.verify())
 def show_items():
     id = request.params.get("user_id")
+    print(id)
     products = db(db.product.user_id == id).select().as_list()
     return dict(products=products) 
 
@@ -225,7 +218,12 @@ def load_Info():
     if len(user_Info) > 0: 
         user[0].update(user_Info[0])
     else:
-        user[0].update({'user_description': "Sorry, I do not write anything right now ^_^!"})
+        user[0].update({'user_id':user_id, 'user_description': "Sorry, I do not write anything right now ^_^!"})
+        db.user_option_Info.update_or_insert(
+            (db.user_option_Info.user_id == user_id),
+                user_id=user_id,
+                user_description="Sorry, I do not write anything right now ^_^!"
+        )
     return dict(user=user[0])
 
 
@@ -234,7 +232,6 @@ def load_Info():
 def upload_user_image():
     id = db(db.user.email == get_user_email()).select().first().id
     image = request.json.get("image")
-    print(image)
     check = db(db.user_option_Info.user_id == id).select().first()
     if check is None:
         db.user_option_Info.insert(
@@ -287,10 +284,12 @@ def load_community():
 @action.uses(db, url_signer.verify())
 def add_post():
     user = db(db.user.email == get_user_email()).select().first()
-    check_Info = db(db.user_option_Info.id == user.id).select().first()
+    print(user)
+    check_Info = db(db.user_option_Info.user_id == user.id).select().first()
+    print(check_Info)
     if check_Info is not None:
         if check_Info.nickname is not None:
-            post_username = check_Info.nickname
+            post_username = user.first_name + " " + user.last_name
         else:
             post_username = user.first_name + " " + user.last_name
         if check_Info.user_image is not None:
@@ -313,11 +312,11 @@ def add_post():
 @action.uses(db, auth.user, url_signer.verify())
 def delete_post():
     id = request.params.get('id')
-    user=db(db.auth_user.email == get_user_email()).select().first()
+    user=db(db.user.email == get_user_email()).select().first()
     username = user.first_name + " " + user.last_name
     db(
         (db.post.id == id) &
-        (db.post.post_username == username)
+        (db.post.user_id == user.id)
     ).delete()
     return "GG"
 
@@ -361,19 +360,24 @@ def set_rating():
         rating_down=rating_down,
         rater=get_user(),
     )
+    test= db((db.thumbs.post_id == id) & (db.thumbs.rater == get_user())).select().as_list()
+    print('rating_up', rating_up)
+    print('rating_down', rating_down)
+    print('post_id', id)
+    print('test:', test)
     post_liked_info = db(
         (db.thumbs.post_id == id) &
         (db.thumbs.rating_up == True) 
     ).select()
     for person in post_liked_info:
-        liked_user = db(db.auth_user.id == person.rater).select().first()
+        liked_user = db(db.user.id == person.rater).select().first()
         liked_user_Name = liked_user_Name + [liked_user.first_name + " " + liked_user.last_name]
     post_disliked_info = db(
         (db.thumbs.post_id == id) &
         (db.thumbs.rating_down == True) 
     ).select()
     for person in post_disliked_info:
-        disliked_user = db(db.auth_user.id == person.rater).select().first()
+        disliked_user = db(db.user.id == person.rater).select().first()
         disliked_user_Name = disliked_user_Name + [disliked_user.first_name + " " + disliked_user.last_name]
     return dict(liked_user_Name=liked_user_Name, disliked_user_Name=disliked_user_Name)
 
@@ -404,7 +408,6 @@ def person_number():
 @action.uses(db, auth, "visitor.html")
 def visitor(user_id=None):
     #TODO: 暂时没用到下一行，可删ing
-    print("User", user_id)
     form = Form(db.user_rate_it, csrf_session=session, formstyle=FormStyleBulma)
     return dict(
         visitor_load_Info_url = URL('visitor_load_Info', user_id, signer=url_signer),
@@ -424,7 +427,6 @@ def visitor_load_Info(user_id=None):
         user[0].update(user_Info[0])
     else:
         user[0].update({'user_description': "Sorry, I do not write anything right now ^_^!"})
-    print(user[0])
     return dict(user=user[0])
 #==============================================================================
 
@@ -550,6 +552,7 @@ def show_product(product_id):
     return dict(
         load_product_detail_url = URL('load_product_detail', product_id, signer=url_signer),
         add_product_post_url = URL('add_product_post', product_id, signer=url_signer),
+        delete_product_post_url = URL('delete_product_post', product_id, signer=url_signer),
     )
 
 @action('load_product_detail/<product_id:int>')
@@ -560,6 +563,7 @@ def load_product_detail(product_id):
     user_id = db(db.product.id == product_id).select().first().user_id
     user = db(db.user.id == user_id).select().first()
     owner = user.first_name + " " + user.last_name
+    user = db(db.user.email == get_user_email()).select().as_list()
     product_detail[0].update({'owner': owner})
     more_image = db(db.more_image.product_id == product_id).select().as_list()
     posts = db(db.product_post.product_id == product_id).select().as_list()
@@ -596,5 +600,18 @@ def add_product_post(product_id):
     )
     post = db(db.product_post.id == post_id).select().as_list()
     return dict(post=post)
+
+@action("delete_product_post/<product_id:int>")
+@action.uses(db, auth.user, url_signer.verify())
+def delete_post(product_id):
+    id = request.params.get('id')
+    user=db(db.user.email == get_user_email()).select().first()
+    print(id, product_id, user.id)
+    db(
+        (db.product_post.id == id) &
+        (db.product_post.product_id == product_id) &
+        (db.product_post.user_id == user.id)
+    ).delete()
+    return "GG"
 
 #==================================================================================
