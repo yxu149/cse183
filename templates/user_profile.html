@@ -1,0 +1,141 @@
+[[extend 'layout.html']]
+
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<div class="section" style="background-image: linear-gradient(#e66465, #9198e5);" id="vue-target" v-cloak>
+
+    <div class="level">
+        <div class="level-left">
+            <div class="content">
+                <p class="title">User Profile</p>
+            </div>
+        </div>
+        <div class="level-right">
+            <a class="button is-primary" href="[[=URL('registration')]]">
+                <i class="fa fa-pencil"> Info editing</i>
+            </a>
+        </div>
+    </div>
+
+
+    <!--Upload describtion or Website logo-->
+    <div class="tile is-ancestor">
+        <div class="tile is-vertical is-parent">
+            <div class="tile is-child box">
+                <div v-if="user.user_image" class="image block">
+                    <img class="is-rounded" width="200" :src="user.user_image" />
+                </div>
+                <div class="file is-info is-boxed is-centered">
+                    <label class="file-label">
+                        <input class="file-input" type="file"
+                            accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*" @change="upload_file($event)"
+                            name="resume">
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fa fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Upload your avatar here...
+                            </span></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="tile is-vertical is-parent">
+            <div class="tile is-child box">
+                <p class="is-size-4">User Name</p>
+                <span>{{user.first_name + " " + user.last_name}}</span>
+                <p v-if="user.nickname" class="is-size-4">Nickname</p>
+                <p v-if="user.nickname">{{user.nickname}}</p>
+            </div>
+            <div class="tile is-child box">
+                <p class="is-size-4">Contact Email</p>
+                <p>{{user.email}}</p>
+            </div>
+            <div v-if="user.month != null && user.day != null && user.year != null"class="tile is-child box">
+                <p class="subtitle">Date of Birth</p >
+                <p>{{user.day}}/{{user.month}}/{{user.year}}</p >
+            </div>
+            <div class="tile is-child box">
+                <p class="subtitle">About Me</p>
+                <p>{{user.user_description}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <!-- Put here your Vue.js template -->
+        <div class="container block">
+            <div class="title">Their contents</div>
+            <div class="columns">
+                <div class="column is-half">
+                    <a class="button is-large is-fullwidth" @click="show_items">Items For Sale</a>
+                </div>
+                <div class="column is-half">
+                    <a class="button is-large is-fullwidth" @click="show_community_post">Community Posts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="show_items_status" class="block" >
+        <div v-for="item in items" class="columns box" style="background-color:rgba(256,256,256,0.6);">
+            <div class="column is-one-quarter">
+                <div class="box">
+                    <img :src="item.image"/>
+                </div>
+            </div>
+            <div class="column is-three-quarters">
+                <div class="has-text-weight-bold is-size-3">{{item.product_name}}</div>
+                <div class="product_description">
+                    <p>{{item.description}}</p>
+                </div>
+                <div class="mt-2">
+                    <span class="product_price">${{item.price}}</span>
+                    <span class="product_quantity ml-5">Quantity: {{item.quantity}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="show_community_status" class="section block" >
+        <div v-for="post in posts.slice().reverse()" class="columns box" style="background-color:rgba(256,256,256,0.6);">
+            <div class="media">
+                <div class="media-left">
+                  <p class="image is-64x64">
+                    <img :src="post.post_user_image">
+                  </p>
+                </div>
+                <div class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>{{post.post_username}}</strong>
+                      <br>
+                      {{post.post_content}}
+                    </p>
+                    <nav class="level">
+                      <div class="level-left">
+                        <span class="icon is-size-4 has-text-danger level-item" @click="delete_post(post._idx)">
+                          <i class="fa fa-trash-o"></i>
+                        </span>
+                      </div>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+
+</div>
+
+[[block page_scripts]]
+<script>
+    let upload_user_image_url = "[[=XML(upload_user_image_url)]]";
+    let load_Info_url = "[[=XML(load_Info_url)]]";
+    let show_items_url = "[[=XML(show_items_url)]]";
+    let show_community_status_url = "[[=XML(show_community_status_url)]]";
+    let delete_post_url = "[[=XML(delete_post_url)]]"
+</script>
+<script src="js/user_profile.js"></script>
+[[end]]

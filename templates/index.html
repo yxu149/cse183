@@ -1,0 +1,140 @@
+[[extend 'layout.html']]
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>
+
+<div class="section" style="background-image: linear-gradient(#e66465, #9198e5);" id="vue-target" v-cloak>
+
+  <div class="container">
+    <div class="columns is-vcentered">
+      <div class="column" style="background-color: transparent;">
+        <div class="content">
+          <div class="level">
+            <p v-if="login_status==='out'" class="title level-left">Please sign in</p>
+            <p v-if="login_status==='in'" class="title level-left">Hi, {{userName}} </p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-5">
+        <figure class="image is-3by3">
+          <img class="image" src="../static/logo.png">
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="container has-text-centered block">
+    <div class="columns is-vcentered">
+        <div class="column is-5">
+            <figure class="image is-256x256">
+              <img src="https://picsum.photos/800/600/?random" alt="Description">
+            </figure>
+        </div>
+        <div class="column is-6 is-offset-1">
+            <h1 class="title is-2">
+              Welcome to the High Street Online
+            </h1>
+            <h2 class="subtitle is-4">
+              A second-hand trading platform you can trust. 
+              What you don’t need may be precious treasures to others. So that is why HSO is here, that is why we are here. 
+              Let’s selling or buying something. 
+              Hope you like this this website! Hope it also helps you.
+            </h2>
+            <br>
+        </div>
+    </div>
+</div>
+
+  <!--Upload describtion or Website logo-->
+  <div class="container">
+    <div class="navbar" style="background-color: transparent;">
+      <div class="navbar-item">
+        <div class="control block has-icons-left">
+          <input class="input" type="text" placeholder="Search...." v-model="query" @keyup="search"/>
+          <span class="icon is-small is-left">
+            <i class="fa fa-search"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="query!=''">
+    <div class="section block">
+      <div v-for="result in results" class="box" style="background-color:rgba(256,256,256,0.6);">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <img :src="result.image">
+          </div>
+          <div class="column is-three-quarters">
+            <div class="">
+              <p class="has-text-weight-bold is-size-3">{{result.product_name}}</p>
+              <p class="is-size-5">Description: {{result.description}}</p>
+              <a :href="'[[=URL('visitor')]]' + '/' + result.user_id" class="is-size-6">Owner: {{result.result_owner}}</a>
+              <div class="mt-2">
+                <span class="product_price has-text-link">${{result.price}}</span>
+                <span class="product_quantity ml-5 has-text-link">Quantity: {{result.quantity}}</span>
+              </div>
+              <div class="buttons mt-2">
+                <button v-if="login_status==='in'" class="button is-success" @click="add_wishlist(result.id, result.result_owner)">
+                  <i class="fa fa-arrow-right"> Wishlist</i>
+                </button>
+                <a v-if="login_status==='in'" :href="'[[=URL('show_product')]]' + '/' + result.id" class="button is-link">
+                  <i class="fa fa-newspaper-o"> Detail</i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-if="query==''">
+    <div class="section block">
+      <div v-for="product in products.slice(0,10)" class="box" style="background-color:rgba(256,256,256,0.6);">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <img :src="product.image">
+          </div>
+          <div class="column is-three-quarters">
+            <div class="">
+              <p class="has-text-weight-bold is-size-3">{{product.product_name}}</p>
+              <p class="is-size-5">Description: {{product.description}}</p>
+              <a :href="'[[=URL('visitor')]]' + '/' + product.user_id" class="is-size-6">Owner: {{product.product_owner}}</a>
+              <div class="mt-2">
+                <span class="product_price has-text-link">${{product.price}}</span>
+                <span class="product_quantity ml-5 has-text-link">Quantity: {{product.quantity}}</span>
+              </div>
+              <div class="buttons mt-2">
+                <button v-if="login_status==='in'" class="button is-success" @click="add_wishlist(product.id, product.product_owner)">
+                  <i class="fa fa-arrow-right"> Wishlist</i>
+                </button>
+                <a :href="'[[=URL('show_product')]]' + '/' + product.id" class="button is-link">
+                  <i class="fa fa-newspaper-o"> Detail</i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+</div>
+
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+  let searchBar_url = "[[=XML(searchBar_url)]]";
+  let get_username_url = "[[=XML(get_username_url)]]";
+  let get_products_url = "[[=XML(get_products_url)]]";
+  let add_wishlist_url = "[[=XML(add_wishlist_url)]]";
+</script>
+<script src="js/index.js"></script>
+[[end]]
